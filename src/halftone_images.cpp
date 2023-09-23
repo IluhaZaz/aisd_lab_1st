@@ -3,15 +3,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
-using namespace std;
+#include <random>
+#include <limits>
+#include <iostream>
 using namespace halftone_images;
+using namespace std;
 
-
-template<typename T>
-T halftone_images::random(int T_min_value, int T_max_value)
-{
-	return srand();
-}
 
 template<typename T>
 inline halftone_images::HalftoneImage<T>::HalftoneImage(int m, int n, bool random)
@@ -21,10 +18,10 @@ inline halftone_images::HalftoneImage<T>::HalftoneImage(int m, int n, bool rando
 	{
 		*_matrix = new T;
 		if (random == true) {
-			**_matrix =  
+			**_matrix = halftone_images::random();
 		}
 		else {
-
+			**_matrix = 0;
 		}
 		_matrix++;
 	}
