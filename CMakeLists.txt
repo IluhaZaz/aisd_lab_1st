@@ -18,7 +18,7 @@ if(MSVC)
 endif()
 
 # Объявляем библиотеку
-add_library(halftone_images SHARED "include/halftone_images.h" "src/halftone_images.cpp")
+add_library(halftone_images SHARED "halftone_images.cpp")
 target_include_directories(halftone_images PUBLIC "include")
 
 # Подключаем googletest
@@ -28,7 +28,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Объявляем тесты
-add_executable(halftone_images_tests "tests/halftone_images_test.cpp")
+add_executable(halftone_images_tests "halftone_images_tests.cpp")
 target_link_libraries(halftone_images_tests halftone_images GTest::gtest_main)
 
 
