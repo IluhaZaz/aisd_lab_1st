@@ -94,7 +94,10 @@ public:
 		}
 	}
 	
-	
+	HalftoneImage(HalftoneImage& other)
+	{
+
+	}
 	
 	friend std::ostream& operator<< (std::ostream& out, const HalftoneImage<T>& h)
 	{
@@ -115,37 +118,37 @@ public:
 		return _matrix[i][j];
 	}
 	
-	friend HalftoneImage operator * (const HalftoneImage& other)
+	friend HalftoneImage operator * (const HalftoneImage& first, const HalftoneImage& other)
 	{
-		if (_m != other._m || _n != other._n)
+		if (first._m != other._m || first._n != other._n)
 			throw runtime_error("In operator * : different size");
-		HalftoneImage<T> h(_m, _n, 0);
-		for (int i = 0; i < _m; i++)
+		HalftoneImage<T> h(first._m, first._n, false);
+		for (int i = 0; i < first._m; i++)
 		{
-			for (int j = 0; j < _n; j++)
+			for (int j = 0; j < first._n; j++)
 			{
-				if (_matrix[i][j] * other._matrix[i][j] > std::numeric_limits<T>::max())
+				if (first._matrix[i][j] * other._matrix[i][j] > std::numeric_limits<T>::max())
 					h._matrix[i][j] = std::numeric_limits<T>::max();
 				else
-					h._matrix[i][j] = _matrix[i][j] * other._matrix[i][j];
+					h._matrix[i][j] = first._matrix[i][j] * other._matrix[i][j];
 			}
 		}
 		return h;
 	}
 
-	friend HalftoneImage operator + (const HalftoneImage& other)
+	friend HalftoneImage<T> operator+(const HalftoneImage<T>& first, const HalftoneImage<T>& other)
 	{
-		if (_m != other._m || _n != other._n)
+		if (first._m != other._m || first._n != other._n)
 			throw runtime_error("In operator * : different size");
-		HalftoneImage<T> h(_m, _n, 0);
-		for (int i = 0; i < _m; i++)
+		HalftoneImage<T> h(first._m, first._n, false);
+		for (int i = 0; i < first._m; i++)
 		{
-			for (int j = 0; j < _n; j++)
+			for (int j = 0; j < first._n; j++)
 			{
-				if (_matrix(i)(j) + other._matrix(i)(j) > std::numeric_limits<T>::max())
-					h._matrix(i)(j) = std::numeric_limits<T>::max();
+				if (first._matrix[i][j] + other._matrix[i][j] > std::numeric_limits<T>::max())
+					h._matrix[i][j] = std::numeric_limits<T>::max();
 				else
-					h._matrix(i)(j) = _matrix(i)(j) + other._matrix(i)(j);
+					h._matrix[i][j] = first._matrix[i][j] + other._matrix[i][j];
 			}
 		}
 		return h;
@@ -170,8 +173,34 @@ public:
 	}
 	
 	HalftoneImage operator ! ();
+
 	float count_fill_factor() {};
-	//~HalftoneImage();
+
+	void swap(HalftoneImage& rhs) {
+		for (int i = 0; i < _m; i++)
+		{
+			std::swap(_matrix[i], rhs._matrix[i]);
+		}
+		std::swap(this->_matrix, rhs._matrix);
+	}
+
+	HalftoneImage& operator=(HalftoneImage rhs)
+	{
+		if(_m != rhs._m || _n != rhs._n)
+			throw runtime_error("In operator = : different size");
+		rhs.swap(*this);
+		return *this;
+	}
+
+	~HalftoneImage()
+	{
+		for (int i = 0; i < _m; i++)
+		{
+			delete _matrix[i];
+		}
+		delete[] _matrix;
+	}
+	
 };
 
 
