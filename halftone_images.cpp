@@ -143,6 +143,8 @@ public:
 			{
 				if (first._matrix[i][j] * other._matrix[i][j] > std::numeric_limits<T>::max())
 					h._matrix[i][j] = std::numeric_limits<T>::max();
+				else if (first._matrix[i][j] * other._matrix[i][j] < std::numeric_limits<T>::min())
+					h._matrix[i][j] = std::numeric_limits<T>::min();
 				else
 					h._matrix[i][j] = first._matrix[i][j] * other._matrix[i][j];
 			}
@@ -165,6 +167,42 @@ public:
 					h._matrix[i][j] = std::numeric_limits<T>::min();
 				else
 					h._matrix[i][j] = first._matrix[i][j] + other._matrix[i][j];
+			}
+		}
+		return h;
+	}
+
+	friend HalftoneImage operator * (const HalftoneImage& first, T constant)
+	{
+		HalftoneImage<T> h(first._m, first._n, false);
+		for (int i = 0; i < first._m; i++)
+		{
+			for (int j = 0; j < first._n; j++)
+			{
+				if (first._matrix[i][j] * constant > std::numeric_limits<T>::max())
+					h._matrix[i][j] = std::numeric_limits<T>::max();
+				else if (first._matrix[i][j] * constant < std::numeric_limits<T>::min())
+					h._matrix[i][j] = std::numeric_limits<T>::min();
+				else
+					h._matrix[i][j] = first._matrix[i][j] * constant;
+			}
+		}
+		return h;
+	}
+
+	friend HalftoneImage<T> operator+(const HalftoneImage<T>& first, T constant)
+	{
+		HalftoneImage<T> h(first._m, first._n, false);
+		for (int i = 0; i < first._m; i++)
+		{
+			for (int j = 0; j < first._n; j++)
+			{
+				if (first._matrix[i][j] + constant > std::numeric_limits<T>::max())
+					h._matrix[i][j] = std::numeric_limits<T>::max();
+				else if (first._matrix[i][j] + constant < std::numeric_limits<T>::min())
+					h._matrix[i][j] = std::numeric_limits<T>::min();
+				else
+					h._matrix[i][j] = first._matrix[i][j] + constant;
 			}
 		}
 		return h;
@@ -224,20 +262,25 @@ public:
 		{
 			for (int j = 0; j < _n; j++)
 			{
-				cff += ((double)_matrix[i][j]) / denominator;
+				cff += _matrix[i][j] / denominator;
 			}
 		}
 		return cff;
 	}
 
-
-/*
-HalftoneImage operator ! ()
+HalftoneImage operator !()
 {
-
+	HalftoneImage<T> h(_m, _n, false);
+	for (int i = 0; i <_m; i++)
+	{
+		for (int j = 0; j < _n; j++)
+		{
+			h._matrix[i][j] = std::numeric_limits<T>::min() + (std::numeric_limits<T>::max() - _matrix[i][j] + 1);
+		}
+	}
+	return h;
 }
 
-*/
 };
 
 

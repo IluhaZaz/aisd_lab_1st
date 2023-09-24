@@ -62,6 +62,51 @@ TEST(HalftoneImageTests, OperatorCheck) {
     EXPECT_EQ(h7, h8);
 }
 
+TEST(HalftoneImageTests, OperatorCheck2) {
+    short* data1 = new short[4] {10, 5, 3, 100 };
+    HalftoneImage<short> h1(2, 2, data1);
+    short* data2 = new short[4] {15, 10, 8, 105 };
+    HalftoneImage<short> h2(2, 2, data2);
+    EXPECT_TRUE(h1 + 5 == h2);
+
+    short* data3 = new short[4] {10, 5, 3, 100 };
+    HalftoneImage<short> h3(2, 2, data3);
+    short* data4 = new short[4] {30, 15, 9, 300 };
+    HalftoneImage<short> h4(2, 2, data4);
+    EXPECT_TRUE(h3 *3 == h4);
+
+    bool* data5 = new bool[4] {1, 0, 0, 1 };
+    HalftoneImage<bool> h5(2, 2, data5);
+    bool* data6 = new bool[4] {1, 1, 1, 1};
+    HalftoneImage<bool> h6(2, 2, data6);
+    EXPECT_TRUE(h5 + 1 == h6);
+
+    char* data7 = new char[4] {'a', 'b', 'c', 'd'};
+    HalftoneImage<char> h7(2, 2, data7);
+    char* data8 = new char[4] {'k', 'l', 'm', 'n'};
+    HalftoneImage<char> h8(2, 2, data8);
+    EXPECT_TRUE(h7 + 10 == h8);
+}
+
+TEST(HalftoneImageTests, OperatorCheck3) {
+    short* data1 = new short[4] {10, 5, 3, 100 };
+    HalftoneImage<short> h1(2, 2, data1);
+    HalftoneImage<short> h2 = !h1;
+    EXPECT_EQ(h1 + h2 , HalftoneImage<short>(2, 2, false));
+
+    short* data3 = new short[4] {10, 5, 3, 100 };
+    HalftoneImage<short> h3(2, 2, data3);
+    short* data4 = new short[4] {30, 15, 9, 300 };
+    HalftoneImage<short> h4(2, 2, data4);
+    EXPECT_TRUE(h3 * 3 == h4);
+
+    bool* data5 = new bool[4] {1, 0, 0, 1 };
+    HalftoneImage<bool> h5(2, 2, data5);
+    bool* data6 = new bool[4] {0, 1, 1, 0 };
+    HalftoneImage<bool> h6(2, 2, data6);
+    EXPECT_TRUE(h5 == !h6);
+}
+
 TEST(HalftoneImageTests, ExceptionCheck) {
     EXPECT_ANY_THROW(HalftoneImage<short> h(3, -3, false));
     EXPECT_ANY_THROW(HalftoneImage<short> h(-3, 4, true));
@@ -77,10 +122,14 @@ TEST(HalftoneImageTests, ExceptionCheck) {
 TEST(HalftoneImageTests, CountFillFactorCheck) {
     HalftoneImage<short> h(3, 3, false);
     EXPECT_EQ(0, h.count_fill_factor());
-    
-    short* data = new short[4] {10000, 20000, 30000, 4000 };
+
+    short* data = new short[4] {10, 20, 30, 40 };
     HalftoneImage<short> h2(2, 2, data);
-    EXPECT_NEAR(0.2882961, h2.count_fill_factor(), EPSILON);
+    EXPECT_NEAR(0.0007629, h2.count_fill_factor(), EPSILON);
+
+    short* data2 = new short[4] {10000, 20000, 30000, 15000 };
+    HalftoneImage<short> h3(2, 2, data2);
+    EXPECT_NEAR(0.572222, h3.count_fill_factor(), EPSILON);
 }
 
 
