@@ -94,24 +94,6 @@ public:
 		}
 	}
 	
-	friend bool operator==(HalftoneImage<T> a, HalftoneImage<T> b)
-	{
-		if (a._m != b._m || a._n != b._n)
-			return false;
-		for (int i = 0; i < a._m; i++)
-		{
-			for (int j = 0; j < a._n; j++)
-			{
-				if (a._matrix[i][j] != b._matrix[i][j])
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	
 	
 	friend std::ostream& operator<< (std::ostream& out, const HalftoneImage<T>& h)
 	{
@@ -172,6 +154,26 @@ public:
 		return h;
 	}
 
+	friend HalftoneImage<T> operator-(const HalftoneImage<T>& first, const HalftoneImage<T>& other)
+	{
+		if (first._m != other._m || first._n != other._n)
+			throw runtime_error("In operator - : different size");
+		HalftoneImage<T> h(first._m, first._n, false);
+		for (int i = 0; i < first._m; i++)
+		{
+			for (int j = 0; j < first._n; j++)
+			{
+				if (first._matrix[i][j] - other._matrix[i][j] > std::numeric_limits<T>::max())
+					h._matrix[i][j] = std::numeric_limits<T>::max();
+				else if (first._matrix[i][j] - other._matrix[i][j] < std::numeric_limits<T>::min())
+					h._matrix[i][j] = std::numeric_limits<T>::min();
+				else
+					h._matrix[i][j] = first._matrix[i][j] - other._matrix[i][j];
+			}
+		}
+		return h;
+	}
+
 	friend HalftoneImage operator * (const HalftoneImage& first, T constant)
 	{
 		HalftoneImage<T> h(first._m, first._n, false);
@@ -203,6 +205,24 @@ public:
 					h._matrix[i][j] = std::numeric_limits<T>::min();
 				else
 					h._matrix[i][j] = first._matrix[i][j] + constant;
+			}
+		}
+		return h;
+	}
+
+	friend HalftoneImage<T> operator-(const HalftoneImage<T>& first, T constant)
+	{
+		HalftoneImage<T> h(first._m, first._n, false);
+		for (int i = 0; i < first._m; i++)
+		{
+			for (int j = 0; j < first._n; j++)
+			{
+				if (first._matrix[i][j] - constant > std::numeric_limits<T>::max())
+					h._matrix[i][j] = std::numeric_limits<T>::max();
+				else if (first._matrix[i][j] - constant < std::numeric_limits<T>::min())
+					h._matrix[i][j] = std::numeric_limits<T>::min();
+				else
+					h._matrix[i][j] = first._matrix[i][j] - constant;
 			}
 		}
 		return h;
@@ -266,23 +286,97 @@ public:
 			}
 		}
 		return cff;
+	};
+
+	int get_n()
+	{
+		return _n;
 	}
 
-HalftoneImage operator !()
-{
-	HalftoneImage<T> h(_m, _n, false);
-	for (int i = 0; i <_m; i++)
+	int get_m()
 	{
-		for (int j = 0; j < _n; j++)
-		{
-			h._matrix[i][j] = std::numeric_limits<T>::min() + (std::numeric_limits<T>::max() - _matrix[i][j] + 1);
-		}
+		return _m;
 	}
-	return h;
-}
 
 };
 
+	template <typename T>
+	HalftoneImage<T> operator !(HalftoneImage<T> f)
+	{
+		HalftoneImage<T> h(f.get_m(), f.get_n(), false);
+		for (int i = 0; i < f.get_m(); i++)
+		{
+			for (int j = 0; j < f.get_n(); j++)
+			{
+				h(i, j) = -1 * f(i, j);
+			}
+		}
+		return h;
+	}
 
+	template<>
+	HalftoneImage<bool> operator !(HalftoneImage<bool> f)
+	{
+		HalftoneImage<bool> h(f.get_m(), f.get_n(), false);
+		for (int i = 0; i < f.get_m(); i++)
+		{
+			for (int j = 0; j < f.get_n(); j++)
+			{
+				if (f(i, j) == 1)
+					h(i, j) = 0;
+				else
+					h(i, j) = 1;
+			}
+		}
+		return h;
+	}
 
+	template<>
+	HalftoneImage<char> operator !(HalftoneImage<char> f)
+	{
+		HalftoneImage<char> h(f.get_m(), f.get_n(), false);
+		for (int i = 0; i < f.get_m(); i++)
+		{
+			for (int j = 0; j < f.get_n(); j++)
+			{
+				h(i, j) = 'a' + ('z' - f(i, j));
+			}
+		}
+		return h;
+	}
 
+	template <typename T>
+	bool operator==(HalftoneImage<T> a, HalftoneImage<T> b)
+	{
+		if (a.get_m() != b.get_m() || a.get_n() != b.get_n())
+			return false;
+		for (int i = 0; i < a.get_m(); i++)
+		{
+			for (int j = 0; j < a.get_n(); j++)
+			{
+				if (a(i, j) != b(i, j))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	template <>
+	bool operator==(HalftoneImage<float> a, HalftoneImage<float> b)
+	{
+		if (a.get_m() != b.get_m() || a.get_n() != b.get_n())
+			return false;
+		for (int i = 0; i < a.get_m(); i++)
+		{
+			for (int j = 0; j < a.get_n(); j++)
+			{
+				if (a(i, j) - b(i, j) > std::numeric_limits<float>::min())
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}

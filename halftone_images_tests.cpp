@@ -91,20 +91,31 @@ TEST(HalftoneImageTests, OperatorCheck2) {
 TEST(HalftoneImageTests, OperatorCheck3) {
     short* data1 = new short[4] {10, 5, 3, 100 };
     HalftoneImage<short> h1(2, 2, data1);
-    HalftoneImage<short> h2 = !h1;
-    EXPECT_EQ(h1 + h2 , HalftoneImage<short>(2, 2, false));
+    short* data2 = new short[4] {30, 15, 9, 300 };
+    HalftoneImage<short> h2(2, 2, data2);
+    EXPECT_TRUE(h1 * 3 == h2);
 
     short* data3 = new short[4] {10, 5, 3, 100 };
     HalftoneImage<short> h3(2, 2, data3);
-    short* data4 = new short[4] {30, 15, 9, 300 };
-    HalftoneImage<short> h4(2, 2, data4);
-    EXPECT_TRUE(h3 * 3 == h4);
+    HalftoneImage<short> h4 = !h3;
+    EXPECT_EQ(h3 + h4 , HalftoneImage<short>(2, 2, false));
 
-    bool* data5 = new bool[4] {1, 0, 0, 1 };
-    HalftoneImage<bool> h5(2, 2, data5);
-    bool* data6 = new bool[4] {0, 1, 1, 0 };
-    HalftoneImage<bool> h6(2, 2, data6);
+    bool* data4 = new bool[4] {1, 0, 0, 1 };
+    HalftoneImage<bool> h5(2, 2, data4);
+    bool* data5 = new bool[4] {0, 1, 1, 0 };
+    HalftoneImage<bool> h6(2, 2, data5);
     EXPECT_TRUE(h5 == !h6);
+
+    float* data7 = new float[4] {10, 5, 3, 100 };
+    HalftoneImage<float> h7(2, 2, data7);
+    HalftoneImage<float> h8 = !h7;
+    HalftoneImage<float> h9 = HalftoneImage<float>(2, 2, false);
+    EXPECT_EQ(h7 + h8, h9);
+
+    char* data8 = new char[4] {'a', 'b', 'c', 'd' };
+    HalftoneImage<char> h10(2, 2, data8);
+    HalftoneImage<char> h11 = !h10;
+    EXPECT_EQ(h11, HalftoneImage<char>(2, 2, new char[4]{'z', 'y', 'x', 'w'}));
 }
 
 TEST(HalftoneImageTests, ExceptionCheck) {
@@ -130,6 +141,10 @@ TEST(HalftoneImageTests, CountFillFactorCheck) {
     short* data2 = new short[4] {10000, 20000, 30000, 15000 };
     HalftoneImage<short> h3(2, 2, data2);
     EXPECT_NEAR(0.572222, h3.count_fill_factor(), EPSILON);
+
+    bool* data3 = new bool[4] {1, 0, 0, 1 };
+    HalftoneImage<bool> h4(2, 2, data3);
+    EXPECT_NEAR(0.5, h4.count_fill_factor(), EPSILON);
 }
 
 
