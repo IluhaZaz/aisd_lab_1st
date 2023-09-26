@@ -94,7 +94,6 @@ public:
 		}
 	}
 	
-	
 	friend std::ostream& operator<< (std::ostream& out, const HalftoneImage<T>& h)
 	{
 		for (int i = 0; i < h._m; i++)
@@ -258,7 +257,6 @@ public:
 		delete[] _matrix;
 	}
 	
-	
 	HalftoneImage(const HalftoneImage& other)
 	{
 		_m = other._m;
@@ -297,8 +295,60 @@ public:
 	{
 		return _m;
 	}
-
 };
+
+template <typename T>
+T invert(T value) 
+{
+	return -1 * value;
+}
+template<>
+bool invert(bool value) 
+{
+	if (value == 1)
+		return 0;
+	else
+		return 1;
+
+}
+template<>
+char invert(char value)
+{
+	return 'a' + ('z' - value);
+}
+
+class Point {
+public:
+	float _x;
+	float _y;
+	Point(float x, float y)
+	{
+		_x = x;
+		_y = y;
+	}
+};
+
+float get_lenear_func_value_at_x(Point a, Point b, float x)
+{
+	float k = (a._y - b._y) * 1.0 / (a._x - b._x);
+	float c = a._y - k * a._x;
+	return k * x + c;
+}
+
+template<typename T>
+void invert_values_above_line(HalftoneImage<T>& h, Point a, Point b)
+{
+	for (int i = 0; i < h.get_m(); i++)
+	{
+		for (int j = 0; j < h.get_n(); j++)
+		{
+			if (h.get_m() - i - 1 >= get_lenear_func_value_at_x(a, b, j + 0.5))
+			{
+				h(i, j) = invert(h(i,j));
+			}
+		}
+	}
+}
 
 	template <typename T>
 	HalftoneImage<T> operator !(HalftoneImage<T> f)

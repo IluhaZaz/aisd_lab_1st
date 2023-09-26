@@ -12,6 +12,7 @@ TEST(HalftoneImageTests, SwapCheck) {
     HalftoneImage<short> h2(2, 2, data2);
     cout << h1;
     cout << h2;
+    cout << endl;
     swap(h1, h2);
     cout << h1;
     cout << h2;
@@ -30,7 +31,6 @@ TEST(HalftoneImageTests, ConstructorCheck) {
     h3(0, 0) = 0; h3(0, 1) = 1; h3(1, 0) = 1; h3(1, 1) = 0;
     HalftoneImage<bool> h4(h3);
     EXPECT_EQ(h3, h4);
-
 }
 
 TEST(HalftoneImageTests, OperatorCheck) {
@@ -145,7 +145,33 @@ TEST(HalftoneImageTests, CountFillFactorCheck) {
     bool* data3 = new bool[4] {1, 0, 0, 1 };
     HalftoneImage<bool> h4(2, 2, data3);
     EXPECT_NEAR(0.5, h4.count_fill_factor(), EPSILON);
+
+    short* data10 = new short[16] {1,2,3,4,5,6,7,8,9};
+    HalftoneImage<short> h10(4, 4, data10);
 }
 
+TEST(HalftoneImageTests, InvertValuesAboveLine) {
+    short* data1 = new short[4] {10, 5, 3, 100 };
+    HalftoneImage<short> h1(2, 2, data1);
+    short* data2 = new short[4] {-10, 5, 3, 100 };
+    HalftoneImage<short> h2(2, 2, data2);
+    invert_values_above_line(h1, Point(5, 5), Point(3, 3));
+    EXPECT_EQ(h2, h1);
+
+    
+    bool* data3 = new bool[9] {1,1,0,1,0,1,0,0,1};
+    HalftoneImage<bool> h3(3, 3, data3);
+    bool* data4 = new bool[9] {0,0,1,0,1,1,1,0,1};
+    HalftoneImage<bool> h4(3, 3, data4);
+    invert_values_above_line(h3, Point(1, 0), Point(3, 2));
+    EXPECT_EQ(h4, h3);
+
+    bool* data5 = new bool[9] {1, 1, 0, 1, 0, 1, 0, 0, 1};
+    HalftoneImage<bool> h5(3, 3, data5);
+    bool* data6 = new bool[9] {0,0,1,1,1,0,0,0,0};
+    HalftoneImage<bool> h6(3, 3, data6);
+    invert_values_above_line(h5, Point(0, 2), Point(2, 0));
+    EXPECT_EQ(h6, h5);
+}
 
 
