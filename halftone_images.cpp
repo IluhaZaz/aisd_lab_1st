@@ -342,7 +342,7 @@ void invert_values_above_line(HalftoneImage<T>& h, Point a, Point b)
 	{
 		for (int j = 0; j < h.get_n(); j++)
 		{
-			if (h.get_m() - i - 1 >= get_lenear_func_value_at_x(a, b, j + 0.5))
+			if (h.get_m() - i - 1 >= get_lenear_func_value_at_x(a, b, j) && h.get_m() - i - 1 >= get_lenear_func_value_at_x(a, b, j + 1))
 			{
 				h(i, j) = invert(h(i,j));
 			}

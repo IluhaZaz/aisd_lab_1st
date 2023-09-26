@@ -168,10 +168,17 @@ TEST(HalftoneImageTests, InvertValuesAboveLine) {
 
     bool* data5 = new bool[9] {1, 1, 0, 1, 0, 1, 0, 0, 1};
     HalftoneImage<bool> h5(3, 3, data5);
-    bool* data6 = new bool[9] {0,0,1,1,1,0,0,0,0};
+    bool* data6 = new bool[9] {0, 0, 1, 1, 1, 0, 0, 0, 0};
     HalftoneImage<bool> h6(3, 3, data6);
     invert_values_above_line(h5, Point(0, 2), Point(2, 0));
     EXPECT_EQ(h6, h5);
+
+    bool* data7 = new bool[9] {1, 1, 0, 1, 0, 1, 0, 0, 1};
+    HalftoneImage<bool> h7(3, 3, data7);
+    bool* data8 = new bool[9] {0, 0, 0, 0, 0, 1, 0, 0, 1};
+    HalftoneImage<bool> h8(3, 3, data8);
+    invert_values_above_line(h7, Point(0.75, 0), Point(3, 2.15));
+    EXPECT_EQ(h8, h7);
 }
 
 
